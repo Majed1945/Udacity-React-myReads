@@ -4,6 +4,7 @@ import * as booksAPI from "./BooksAPI";
 import { Route, Routes } from "react-router-dom";
 import HomePage from "./Pages/HomePage";
 import SearchPage from "./Pages/SearchPage";
+import DetailedBook from "./Pages/DetailedBook";
 
 const App = () => {
   
@@ -21,8 +22,9 @@ const App = () => {
   };
 
   const updateBook = async (book, newShelf) => {
+    book.shelf = newShelf;
     await booksAPI.update(book, newShelf);
-    getBooks();
+    setBooks([...books.filter((b) => b.id !== book.id), book]);
   };
 
   const changeShelf = (book, newShelf) => {
@@ -31,15 +33,16 @@ const App = () => {
 
   useEffect(() => {
     getBooks();
-  }, [books]);
+  }, []);
 
   return (
     <Routes>
       <Route exact path="/" element={
       <HomePage changeShelf={changeShelf} books={books} />}/>
       <Route exact path="/search" element={
-      <SearchPage changeShelf={changeShelf} books={books} searchBooks={searchBooks} findBooks={getSearchBooks}/>}
-      />
+      <SearchPage changeShelf={changeShelf} books={books} searchBooks={searchBooks} findBooks={getSearchBooks}/>}/>
+      <Route exact path="/details" element={
+      <DetailedBook/>}/>
     </Routes>
   );
 };
